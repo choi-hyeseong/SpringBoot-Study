@@ -8,10 +8,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-
+/*
 @Entity //엔티티객체 = db에서 바로 매핑
 @NoArgsConstructor //생성자 없음
-@Getter
+@Getter*/
 public class User {
 
     @Id
