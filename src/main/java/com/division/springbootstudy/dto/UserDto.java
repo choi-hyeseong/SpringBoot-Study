@@ -1,21 +1,22 @@
 package com.division.springbootstudy.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.division.springbootstudy.domain.User;
+import lombok.*;
 
 @Getter
 @Setter
-@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserDto {
 
     private String name;
     private int age;
 
-    @Builder
-    public UserDto(String name, int age) {
-        this.name = name;
-        this.age = age;
+    public User toEntity() {
+        return User.builder()
+                .age(age)
+                .name(name)
+                .build();
     }
+
 }

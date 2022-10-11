@@ -1,22 +1,24 @@
 package com.division.springbootstudy.controller;
 
-import com.division.springbootstudy.domain.User;
 import com.division.springbootstudy.dto.UserDto;
-import com.division.springbootstudy.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.division.springbootstudy.dto.UserResponseDto;
+import com.division.springbootstudy.service.UserService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.bind.annotation.PutMapping;
+
+import java.util.List;
 
 @Controller //localhost:8080/~ 오는 요청들 파싱해주는곳, restcontroller 사용시 string 리턴값 => body
+@AllArgsConstructor
 public class ApplicationController {
 
-    /*@Autowired
-    private UserRepository repository; 아직 안쓸예정*/
+    private UserService service;
 
     /* Thymeleaf인가 뭐시기인가 쓴거
     @GetMapping("/test") //localhost:8080/main
@@ -33,5 +35,14 @@ public class ApplicationController {
         return "main";
     }
 
+    @GetMapping("/user/add")
+    public ResponseEntity<Long> addUser(@ModelAttribute UserDto dto) {
+        return new ResponseEntity<>(service.addUser(dto), HttpStatus.OK);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<UserResponseDto>> getUser() {
+        return new ResponseEntity<>(service.getUsers(), HttpStatus.OK);
+    }
 
 }

@@ -1,17 +1,19 @@
 package com.division.springbootstudy.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-/*
+import javax.persistence.*;
+
+
 @Entity //엔티티객체 = db에서 바로 매핑
 @NoArgsConstructor //생성자 없음
-@Getter*/
+@AllArgsConstructor
+@Table(name = "user_db")
+@Builder
+@Getter
 public class User {
 
     @Id
