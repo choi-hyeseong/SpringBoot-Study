@@ -1,6 +1,6 @@
 package com.division.springbootstudy.dto;
 
-import com.division.springbootstudy.domain.User;
+import com.division.springbootstudy.domain.WebUser;
 import lombok.Getter;
 
 @Getter
@@ -11,7 +11,7 @@ public class UserResponseDto {
     private String name;
     private int age;
 
-    public UserResponseDto(User user) {
+    public UserResponseDto(WebUser user) {
         this.id = user.getId();
         this.name = user.getName();
         this.age = user.getAge();

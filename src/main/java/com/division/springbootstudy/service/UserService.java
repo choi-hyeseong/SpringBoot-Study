@@ -1,6 +1,5 @@
 package com.division.springbootstudy.service;
 
-import com.division.springbootstudy.domain.User;
 import com.division.springbootstudy.dto.UserDto;
 import com.division.springbootstudy.dto.UserResponseDto;
 import com.division.springbootstudy.repository.UserRepository;
