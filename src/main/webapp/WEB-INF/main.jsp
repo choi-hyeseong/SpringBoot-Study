@@ -10,8 +10,7 @@
 <div class="container">
     <table class="table table-hover table table-striped">
         <tr>
-            <INPUT type="button" value="추가" onclick="addUser()">
-            <INPUT type="button" value="불러오기" onclick="getUser()">
+            <INPUT type="button" value="글 추가" onclick="addText()">
         </tr>
         <tr>
             <p id="result">결과영역</p>
@@ -24,28 +23,19 @@
 
 </body>
 <script>
-    function addUser() {
+    function addText() {
+        var parseData = {title: "테스트", text: "테스트 내용입니다."}
         $.ajax({
-            url : "http://localhost:8080/user/add?name=" + document.getElementById("name").value + "&age=" + document.getElementById("age").value,
-            type: "get",
-            contentType: "application/x-www-form-urlencoded; charset=euc-kr",
+            url : "http://127.0.0.1:8080/board/write",
+            type: "post",
+            contentType: "application/json",
+            data: JSON.stringify(parseData),
             success : () => {
                 document.getElementById("result").innerText = "성공"
             }
         })
 
     }
-    function getUser() {
-        $.ajax({
-            url : "http://localhost:8080/user",
-            type: "get",
-            contentType: "application/x-www-form-urlencoded; charset=euc-kr",
-            dataType: "text",
-            success : (result) => {
-                document.getElementById("result").innerText = result
-            }
-        })
 
-    }
 </script>
 </html>

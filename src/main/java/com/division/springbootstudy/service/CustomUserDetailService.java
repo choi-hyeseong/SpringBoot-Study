@@ -2,8 +2,8 @@ package com.division.springbootstudy.service;
 
 import com.division.springbootstudy.domain.UserRole;
 import com.division.springbootstudy.domain.WebUser;
-import com.division.springbootstudy.dto.UserDto;
-import com.division.springbootstudy.repository.UserRepository;
+import com.division.springbootstudy.dto.UserRegisterDto;
+import com.division.springbootstudy.repository.AuthRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 @AllArgsConstructor
 public class CustomUserDetailService implements UserDetailsService { //-> principle등 인증에 필요한 서비스(user) 리턴, AuthenticationProvider 등록안할시 자동으로 생성됨.
 
-    private UserRepository repository;
+    private AuthRepository repository;
 
     @Override
     @Transactional
@@ -29,10 +29,11 @@ public class CustomUserDetailService implements UserDetailsService { //-> princi
     }
 
     @Transactional
-    public Long save(UserDto dto) {
+    public Long save(UserRegisterDto dto) {
         //입력받은 dto를 UserDetail로 변경후 저장
+        if (dto.getRole() == null)
+            dto.setRole(UserRole.USER); //null예방
         dto.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword())); //비밀번호 암호화후 저장
-        dto.setRole(UserRole.USER); //기본 유저
         return repository.save(dto.toEntity()).getId();
     }
 

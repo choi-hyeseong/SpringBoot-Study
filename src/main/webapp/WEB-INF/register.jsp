@@ -40,7 +40,7 @@
     $('#register').on("click", (e) => {
         let data = {name: $("#name").val(), age: $("#age").val(), username: $("#username").val(), password: $("#password").val(), email: $("#email").val()}
         $.ajax({
-            url : "http://localhost:8080/register",
+            url : "http://127.0.0.1:8080/register", //이게 왜..
             async: false,
             type: "post",
             data: JSON.stringify(data),

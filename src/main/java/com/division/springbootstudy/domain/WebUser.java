@@ -17,22 +17,16 @@ import java.util.Set;
 @Entity //엔티티객체 = db에서 바로 매핑
 @NoArgsConstructor //생성자 없음
 @AllArgsConstructor
-@Table(name = "user_db")
+@Table(name = "auth_db")
 @Builder
 @Getter
-public class WebUser implements UserDetails { //userDetail을 구현함으로써 user커스텀 가능
+public class WebUser extends BaseTimeEntity implements UserDetails{ //userDetail을 구현함으로써 user커스텀 가능
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) //1씩 증가
     private Long id;
 
-    private String name;
-
-    private Integer age;
-
     private String username;
-
-    private String email;
 
     private String password;
 

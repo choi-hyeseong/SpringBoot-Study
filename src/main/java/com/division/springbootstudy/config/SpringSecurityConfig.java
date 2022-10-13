@@ -40,6 +40,8 @@ public class SpringSecurityConfig {
             .userDetailsService(service)
             .authorizeRequests(auth -> auth.mvcMatchers("/login")
                                            .permitAll()
+                                           .mvcMatchers("/login/**")
+                                           .permitAll()
                                            .mvcMatchers("/main")
                                            .permitAll()
                                            .mvcMatchers("/register")
@@ -47,7 +49,7 @@ public class SpringSecurityConfig {
                                            .antMatchers("/h2-console/**")
                                            .permitAll()
                                            .antMatchers("/board")
-                                           .hasRole("user")
+                                           .hasAuthority("USER")
                                            .anyRequest()
                                            .authenticated())
 

@@ -1,5 +1,7 @@
 package com.division.springbootstudy.dto;
 
+import com.division.springbootstudy.domain.Member;
+import com.division.springbootstudy.domain.UserRole;
 import com.division.springbootstudy.domain.WebUser;
 import lombok.Getter;
 
@@ -10,11 +12,15 @@ public class UserResponseDto {
     private Long id;
     private String name;
     private int age;
+    private String username;
+    private String email;
 
-    public UserResponseDto(WebUser user) {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.age = user.getAge();
+    public UserResponseDto(Member member) {
+        this.id = member.getId();
+        this.name = member.getRealName();
+        this.age = member.getAge();
+        this.username = member.getUsername();
+        this.email = member.getEmail();
     }
 
 }

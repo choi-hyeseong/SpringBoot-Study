@@ -1,14 +1,16 @@
 package com.division.springbootstudy.dto;
 
+import com.division.springbootstudy.domain.Member;
 import com.division.springbootstudy.domain.UserRole;
 import com.division.springbootstudy.domain.WebUser;
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 @Getter
 @Setter
 @AllArgsConstructor
-@Builder
-public class UserDto {
+@NoArgsConstructor
+public class UserRegisterDto {
 
     private String name;
     private int age;
@@ -19,12 +21,18 @@ public class UserDto {
 
     public WebUser toEntity() {
         return WebUser.builder()
-                      .age(age)
-                      .name(name)
-                      .email(email)
                       .username(username)
                       .password(password)
+                      .role(role)
                       .build();
     }
 
+    public Member toMemberEntity() {
+        return Member.builder()
+                     .age(age)
+                     .username(username)
+                     .realName(name)
+                     .email(email)
+                     .build();
+    }
 }
