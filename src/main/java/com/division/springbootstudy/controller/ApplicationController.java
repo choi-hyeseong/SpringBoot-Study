@@ -74,7 +74,8 @@ public class ApplicationController {
 
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
-        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext()
+                                                                                          .getAuthentication());
         return "login"; //로그인페이지로 이동, redirect 쓰는것도 좋을듯
     }
 
@@ -83,6 +84,12 @@ public class ApplicationController {
     public String board(Model model) {
         model.addAttribute("boardList", boardService.getBoardList());
         return "board";
+    }
+
+    @GetMapping("/board/detail")
+    public String detail(@RequestParam long id, Model model) { //id가 없는경우 bad request
+        model.addAttribute("board",boardService.getBoardById(id));
+        return "detail";
     }
 
     @PostMapping("/board/write")

@@ -1,5 +1,6 @@
 package com.division.springbootstudy.service;
 
+import com.division.springbootstudy.domain.Board;
 import com.division.springbootstudy.domain.Member;
 import com.division.springbootstudy.domain.WebUser;
 import com.division.springbootstudy.dto.BoardDto;
@@ -23,6 +24,11 @@ public class BoardService {
     @Transactional(readOnly = true)
     public List<BoardVO> getBoardList() {
         return repository.findAll().stream().map(BoardVO::new).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public BoardVO getBoardById(Long id) {
+        return new BoardVO(repository.findById(id).orElseGet(() -> new Board((long)-1, new Member((long)-1, "null", "null", "null", -1), "null", "null")));
     }
 
     @Transactional

@@ -24,7 +24,7 @@
         <c:forEach var="board" items="${boardList}">
             <tr>
                 <td>${board.id}</td>
-                <td>${board.title}</td>
+                <td><a href="#"><p onclick="showDetail(${board.id})"> ${board.title}</p></a></td>
                 <td>${board.text}</td>
                 <td>${board.user.username}</td>
                 <td>${board.writtenDate}</td>
@@ -32,6 +32,12 @@
         </c:forEach>
     </table>
 </div>
+
+<script>
+    function showDetail(id) {
+        window.location.href = "/board/detail?id=" + id;
+    }
+</script>
 
 </body>
 </html>
