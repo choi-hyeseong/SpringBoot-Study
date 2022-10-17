@@ -30,6 +30,7 @@
                 <td>${board.writtenDate}</td>
             </tr>
         </c:forEach>
+        <button name="write" type="button" value="button" onclick="location.href = 'board/write'">글 작성하기</button>
     </table>
 </div>
 

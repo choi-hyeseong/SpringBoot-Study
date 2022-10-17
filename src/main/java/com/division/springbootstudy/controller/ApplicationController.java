@@ -1,12 +1,19 @@
 package com.division.springbootstudy.controller;
 
+import com.division.springbootstudy.component.FileHandler;
 import com.division.springbootstudy.domain.WebUser;
 import com.division.springbootstudy.dto.BoardDto;
+import com.division.springbootstudy.dto.BoardVO;
+import com.division.springbootstudy.dto.FileResponseDto;
 import com.division.springbootstudy.dto.UserRegisterDto;
 import com.division.springbootstudy.service.BoardService;
 import com.division.springbootstudy.service.CustomUserDetailService;
+import com.division.springbootstudy.service.FileService;
 import com.division.springbootstudy.service.MemberService;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,9 +22,14 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
 
 @Controller //localhost:8080/~ 오는 요청들 파싱해주는곳, restcontroller 사용시 string 리턴값 => body
 @AllArgsConstructor
@@ -27,6 +39,8 @@ public class ApplicationController {
     private CustomUserDetailService service;
     private BoardService boardService;
     private MemberService memberService; //멤버로 분리시키기 위함
+    private FileService fileService;
+    private FileHandler handler;
 
     /* Thymeleaf인가 뭐시기인가 쓴거
     @GetMapping("/test") //localhost:8080/main
@@ -87,16 +101,65 @@ public class ApplicationController {
     }
 
     @GetMapping("/board/detail")
-    public String detail(@RequestParam long id, Model model) { //id가 없는경우 bad request
+    public String detail(@AuthenticationPrincipal WebUser user, @RequestParam long id, Model model) { //id가 없는경우 bad request
         model.addAttribute("board",boardService.getBoardById(id));
+        model.addAttribute("current_user", user.getUsername());
         return "detail";
     }
 
+    @GetMapping("/board/write")
+    public String write() {
+        return "write";
+    }
+
     @PostMapping("/board/write")
-    public ResponseEntity<Integer> writeBoard(@AuthenticationPrincipal WebUser user, @RequestBody BoardDto dto) {
-        boardService.writeText(dto, user.getUsername());
+    public void writeBoard(@AuthenticationPrincipal WebUser user, BoardDto dto, HttpServletResponse response, @RequestParam(value = "file", required = false) List<MultipartFile> file) throws IOException {
+        if (file != null && file.size() != 0)
+            boardService.writeText(dto, user.getUsername(), handler.save(file));
         System.out.println("글 작성됨, " + dto);
+        response.sendRedirect("/board"); //글 작성이후 redirect (안하면 중복 제출)
+    }
+
+    @PostMapping("/board/delete")
+    public ResponseEntity<Integer> deleteBoard(@AuthenticationPrincipal WebUser user, @RequestParam long id) {
+        BoardVO result = boardService.getBoardById(id);
+        boolean isExist = false;
+        if (result.getUser().getUsername().equals(user.getUsername())) {
+            //사용자가 일치할경우
+            isExist = boardService.deleteBoardById(id);
+        }
+        return isExist ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @PutMapping("/board/edit")
+    public ResponseEntity<Integer> editBoard(BoardDto dto, long id) {
+        boardService.editBoard(dto, id);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/board/edit")
+    public String edit(@AuthenticationPrincipal WebUser user, Model model, long id) {
+        BoardVO result = boardService.getBoardById(id);
+        if (result.getUser().getUsername().equals(user.getUsername())) {
+            model.addAttribute("board", boardService.getBoardById(id));
+        }
+        return "edit";
+    }
+
+    @GetMapping("/board/image")
+    public ResponseEntity<Resource> image(@RequestParam long id) {
+        try {
+            FileResponseDto dto = fileService.getFileById(id);
+            Resource image = handler.fileDtoToResource(dto);
+            if (!image.exists())
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            HttpHeaders headers = new HttpHeaders();
+            headers.add("Content-type", Files.probeContentType(handler.getFilePathFromDto(dto)));
+            return new ResponseEntity<>(image, headers, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     /*
