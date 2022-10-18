@@ -27,7 +27,7 @@ public class FileHandler {
     private static final String DIR_LOCATION = System.getProperty("user.dir") + "\\files";
 
     public List<FileDto> save(List<MultipartFile> fileList) {
-        List<FileDto> entityList = new ArrayList<>();
+        List<FileDto> entityList = new ArrayList<>(); //리스트가 없으면 빈 리스트 반환 (null 걱정 x)
         for (MultipartFile file : fileList) {
             String origin = file.getOriginalFilename();
             String ext = extractExtWithDot(origin);

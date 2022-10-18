@@ -18,9 +18,4 @@ public class FileService {
         return new FileResponseDto(repository.findById(id).orElseThrow());
     }
 
-    @Transactional
-    public void save(FileDto dto) {
-        repository.save(dto.toEntity());
-    }
-
 }

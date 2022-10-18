@@ -2,10 +2,7 @@ package com.division.springbootstudy.controller;
 
 import com.division.springbootstudy.component.FileHandler;
 import com.division.springbootstudy.domain.WebUser;
-import com.division.springbootstudy.dto.BoardDto;
-import com.division.springbootstudy.dto.BoardVO;
-import com.division.springbootstudy.dto.FileResponseDto;
-import com.division.springbootstudy.dto.UserRegisterDto;
+import com.division.springbootstudy.dto.*;
 import com.division.springbootstudy.service.BoardService;
 import com.division.springbootstudy.service.CustomUserDetailService;
 import com.division.springbootstudy.service.FileService;
@@ -102,8 +99,11 @@ public class ApplicationController {
 
     @GetMapping("/board/detail")
     public String detail(@AuthenticationPrincipal WebUser user, @RequestParam long id, Model model) { //id가 없는경우 bad request
-        model.addAttribute("board",boardService.getBoardById(id));
+        BoardVO vo = boardService.getBoardById(id);
+        model.addAttribute("board",vo);
         model.addAttribute("current_user", user.getUsername());
+        model.addAttribute("files", vo.getFile());
+        model.addAttribute("replies", vo.getReplies());
         return "detail";
     }
 
@@ -120,6 +120,19 @@ public class ApplicationController {
         response.sendRedirect("/board"); //글 작성이후 redirect (안하면 중복 제출)
     }
 
+    @DeleteMapping("/board/reply/delete")
+    public ResponseEntity<Integer> deleteReply(@AuthenticationPrincipal WebUser user, @RequestParam long id) {
+        boolean result = boardService.deleteReply(user.getUsername(), id);
+        return result ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/board/reply/write")
+    public ResponseEntity<Integer> writeReply(@AuthenticationPrincipal WebUser user, @RequestBody ReplyDto dto) {
+        System.out.println(dto + " 댓글 작성됨");
+        boardService.writeReply(dto, user.getUsername());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PostMapping("/board/delete")
     public ResponseEntity<Integer> deleteBoard(@AuthenticationPrincipal WebUser user, @RequestParam long id) {
         BoardVO result = boardService.getBoardById(id);
@@ -132,8 +145,8 @@ public class ApplicationController {
     }
 
     @PutMapping("/board/edit")
-    public ResponseEntity<Integer> editBoard(BoardDto dto, long id) {
-        boardService.editBoard(dto, id);
+    public ResponseEntity<Integer> editBoard(@AuthenticationPrincipal WebUser user, BoardDto dto, long id) {
+        boardService.editBoard(user.getUsername(), dto, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

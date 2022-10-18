@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Builder
 public class Board extends BaseTimeEntity{
 
@@ -24,13 +25,44 @@ public class Board extends BaseTimeEntity{
     private String title;
     private String text;
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL) //cascade all 지정되서 지워지면 따라서 지워짐
     //단방향 일대다면 join column 써야함 N:1인경우 mappedBy
     private List<FileEntity> files = new ArrayList<>();
+
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)  //cascade all 지정되서 지워지면 따라서 지워짐
+    private List<Reply> replies = new ArrayList<>();
 
     public void update(String title, String text) {
         this.title = title;
         this.text = text;
+    }
+
+    //양방향 매핑
+    public void addFile(FileEntity entity) {
+        Board exist = entity.getBoard();
+        if (exist != null)
+            exist.files.remove(entity);
+        files.add(entity);
+        entity.setBoard(this);
+    }
+
+    public void addReply(Reply reply) {
+        Board exist = reply.getBoard();
+        if (exist != null) {
+            exist.replies.remove(reply);
+        }
+        replies.add(reply);
+        reply.setBoard(this);
+    }
+
+    public void removeFile(FileEntity entity) {
+        entity.setBoard(null);
+        files.remove(entity);
+    }
+
+    public void removeReply(Reply reply) {
+        reply.setBoard(null);
+        replies.remove(reply);
     }
 
 }

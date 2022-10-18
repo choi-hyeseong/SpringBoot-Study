@@ -1,5 +1,6 @@
 package com.division.springbootstudy.dto;
 
+import com.division.springbootstudy.domain.Board;
 import com.division.springbootstudy.domain.FileEntity;
 import lombok.*;
 
@@ -14,10 +15,11 @@ public class FileDto {
 
     private String modifiedName;
 
-    public FileEntity toEntity() {
+    public FileEntity toEntity(Board board) {
         return FileEntity.builder()
-                        .fileName(fileName)
-                        .modifiedName(modifiedName)
-                        .build();
+                         .fileName(fileName)
+                         .modifiedName(modifiedName)
+                         .board(board)
+                         .build();
     }
 }
