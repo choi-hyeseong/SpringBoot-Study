@@ -24,9 +24,8 @@ public class Board extends BaseTimeEntity{
     private String title;
     private String text;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "FILE_ID")
-    //joincolum 써줘야 하고, 단방향 일대다면 join column 써야함
+    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    //단방향 일대다면 join column 써야함 N:1인경우 mappedBy
     private List<FileEntity> files = new ArrayList<>();
 
     public void update(String title, String text) {

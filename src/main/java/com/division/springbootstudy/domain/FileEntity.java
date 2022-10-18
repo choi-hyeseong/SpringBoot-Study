@@ -23,9 +23,9 @@ public class FileEntity {
 
     private String modifiedName;
 
-    /*@ManyToOne
+    //N:1 매핑, 외래키를 주인에서 관리
+    @ManyToOne
+    @JoinColumn(name = "board_id")
     private Board board;
-    단방향으로 짜도 될듯
-    */
 
 }
